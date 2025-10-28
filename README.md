@@ -1,331 +1,111 @@
-# GABRIEL ORGANISM
+# Gabriel Organism
 
-## Metabolisches Informationssystem mit emergenter Intelligenz
+Gabriel Organism is a Rust workspace that explores a biologically inspired "metabolic" approach to information processing. It models an adaptive organism that ingests domain-agnostic information quanta, organizes them in a self-rewiring neural graph, embeds them in a 4D funnel geometry, and detects emergent structure over time. The workspace is organised as modular crates so the metabolic core, geometry, emergence analysis, and higher-level reasoning layers can be reused independently.
 
-Ein domain-agnostisches, selbstorganisierendes System das Informationen wie ein lebender Organismus verstoffwechselt.
+## Highlights
 
----
+- **Metabolic information flow** – ingestion, digestion, assimilation, excretion, and synthesis loops regulate how quanta move through the system and how synaptic weights evolve over time.【F:metabolics/src/lib.rs†L1-L198】
+- **Self-organising neural substrate** – Gabriel Cells manage a dynamic directed graph with Hebbian reinforcement, structural pruning, and diffusion-based activation propagation.【F:gabriel-core/src/lib.rs†L1-L138】【F:gabriel-core/src/graph.rs†L1-L147】
+- **4D funnel geometry** – each quantum is placed in a temporal-spatial manifold that drives neighbourhood formation and tensor-based pattern sampling.【F:trichter-geometry/src/lib.rs†L1-L139】
+- **Emergent pattern analysis** – tensor signatures are inspected for coherence, complexity, stability, and qualitative classes (periodic, harmonic, fractal, chaotic, hierarchical).【F:emergence/src/lib.rs†L1-L120】
+- **Organism orchestration** – the `organism` crate wires metabolism, emergence, and diagnostics together, exposes a CLI, and tracks health, consciousness, and lifecycle progression.【F:organism/src/lib.rs†L1-L170】【F:organism/src/main.rs†L1-L133】
+- **Mathematical cognition layer** – optional abstractions describe mathematical objects, proofs, and curricula so higher-level reasoning can emerge from the same substrate.【F:mathematical-cognition/src/lib.rs†L1-L120】【F:organism/src/learning.rs†L1-L120】
 
-## 🧬 Konzept
-
-Der **Gabriel Organism** kombiniert drei fundamentale Konzepte:
-
-1. **Gabriel Cells**: Kybernetische Neuronen mit Hebbian Learning und struktureller Plastizität
-2. **4D-Trichter-Geometrie**: Zeitlich evolvierende Informationsakkumulation
-3. **Informationsmetabolismus**: Biologisch-inspirierte Verarbeitung von Informations-Quanten
-
-Das Resultat ist ein "digitaler Organismus" der:
-- ✅ **Informationen aufnimmt** (Ingestion)
-- ✅ **Transformiert** (Digestion)  
-- ✅ **Integriert** (Assimilation)
-- ✅ **Aufräumt** (Excretion)
-- ✅ **Neue Strukturen erschafft** (Synthesis)
-
----
-
-## 🏗️ Architektur
+## Workspace layout
 
 ```
-gabriel-organism/
-├── gabriel-core/       # Kybernetische Gabriel Cells
-│   ├── Graph-basierte Neuronen
-│   ├── Hebbian Learning Engine
-│   └── Synaptische Plastizität
-│
-├── trichter-geometry/  # 4D-Informationsgeometrie
-│   ├── Zeitliche Evolution: r(t,θ)
-│   ├── Informationsdichte: ρ(r,θ,t)
-│   └── Tensorprodukt-Muster: Ψ_total
-│
-├── metabolics/         # Informationsstoffwechsel
-│   ├── Metabolische Zyklen
-│   ├── Energie-Management
-│   └── Gabriel-Trichter Integration
-│
-├── emergence/          # Musterbildung & Emergenz
-│   ├── Tensorprodukt-Analyse
-│   ├── Kohärenz-Detektion
-│   └── Muster-Klassifikation
-│
-└── organism/           # Haupt-Organismus
-    ├── Lebenszyklen
-    ├── Gesundheit & Bewusstsein
-    └── Vollständige Integration
+gabriel/
+├── Cargo.toml                  # Workspace members & shared dependencies
+├── BUILD.md, TECHNICAL_SPEC.md # Additional architecture & build notes
+├── gabriel-core/               # Dynamic neuron graph & InformationQuantum trait
+├── trichter-geometry/          # 4D funnel growth, density & tensor sampling
+├── metabolics/                 # Metabolic engine connecting cells & geometry
+├── emergence/                  # Pattern detection & statistics
+├── organism/                   # Library + CLI binary (`gabriel-organism`)
+├── mathematical-cognition/     # Math-specific quantum types and tooling
+└── experiments/                # Exploratory training scenarios & prototypes
 ```
 
----
+Each crate can be built and tested on its own, while the `organism` crate provides an executable demo of the whole organism.
 
-## 🚀 Schnellstart
+## Getting started
 
-### Installation
+### Prerequisites
+
+- Rust 1.75+ with `cargo` and `rustup`
+- (Optional) `llvm-tools-preview` for benchmarking via `criterion`
+
+### Build the workspace
 
 ```bash
-cd gabriel-organism
-cargo build --release
+cd gabriel
+cargo build
 ```
 
-### Basis-Verwendung
+### Run the organism
+
+The main binary lives in `organism/src/main.rs` and is exposed as `gabriel-organism`. It feeds synthetic quanta, steps through lifecycle iterations, and prints a diagnostic report.
 
 ```bash
-# Starte Organismus mit 100 Zyklen
-cargo run --release -- --cycles 100 --feed-count 50
-
-# Verbose Output
-cargo run --release -- --cycles 100 --verbose
-
-# Export Zustand zu JSON
-cargo run --release -- --cycles 100 --output state.json
+cargo run -p organism --bin gabriel-organism -- --cycles 120 --feed-count 80 --radius 1.5 --verbose
 ```
 
-### Als Library
+CLI flags:
 
-```rust
-use organism::{GabrielOrganism, OrganismConfig};
-use gabriel_core::InformationQuantum;
+- `--cycles <u64>` – number of lifecycle iterations to execute (default: 100)
+- `--feed-count <u64>` – how many quanta to ingest before running cycles (default: 50)
+- `--radius <f64>` – initial funnel radius for the geometry model (default: 1.0)
+- `--output <path>` – export final organism state and diagnostics to JSON
+- `--verbose` – enable debug-level tracing via `tracing_subscriber`
 
-// Definiere dein eigenes Quantum
-#[derive(Clone, Debug)]
-struct MyQuantum { /* ... */ }
+At the end of a run the organism prints a multi-section diagnostics report that summarises vitals, metabolism, emergent patterns, and geometry state.【F:organism/src/lib.rs†L216-L276】【F:organism/src/main.rs†L100-L160】
 
-impl InformationQuantum for MyQuantum {
-    // Implementiere Trait...
-}
+### Inspecting state programmatically
 
-// Erstelle Organismus
-let config = OrganismConfig::default();
-let organism = GabrielOrganism::<MyQuantum>::new(config, 1.0);
+The library API offers helpers for embedding in other applications:
 
-// Füttere
-organism.feed(my_quantum);
+- `GabrielOrganism::feed` to ingest arbitrary `InformationQuantum` implementations.【F:organism/src/lib.rs†L94-L138】
+- `GabrielOrganism::lifecycle` to advance the metabolism/emergence loop and update organism state.【F:organism/src/lib.rs†L139-L214】
+- `GabrielOrganism::diagnostics` and `GabrielOrganism::export_state` to retrieve structured telemetry.【F:organism/src/lib.rs†L200-L236】
 
-// Lebenszyklen
-for _ in 0..100 {
-    organism.lifecycle();
-}
-
-// Diagnostik
-let diagnostics = organism.diagnostics();
-println!("{}", diagnostics.report());
-```
-
----
-
-## 📊 Ausgabe
-
-```
-╔════════════════════════════════════════════════════════════╗
-║           GABRIEL ORGANISM DIAGNOSTICS                     ║
-╠════════════════════════════════════════════════════════════╣
-║ VITAL SIGNS                                                ║
-║   Status:        ALIVE ●                                   ║
-║   Health:        87.34% ████████████████                   ║
-║   Consciousness: 72.19% ████████████████                   ║
-║   Age:           100 cycles                                ║
-╠════════════════════════════════════════════════════════════╣
-║ METABOLISM                                                 ║
-║   Energy:        0.85                                      ║
-║   Info Mass:     42.17                                     ║
-║   Entropy:       3.24                                      ║
-║   Growth Rate:   0.92                                      ║
-║   Neurons:       50                                        ║
-║   Connections:   127                                       ║
-╠════════════════════════════════════════════════════════════╣
-║ EMERGENT PATTERNS                                          ║
-║   Total:         23                                        ║
-║   Avg Coherence: 0.78                                      ║
-║   Avg Complexity:1.42                                      ║
-║   Avg Stability: 0.68                                      ║
-╚════════════════════════════════════════════════════════════╝
-```
-
----
-
-## 🧠 Kernkomponenten
-
-### 1. Gabriel Cells
-
-Kybernetische Neuronen mit:
-- **Hebbian Learning**: "Neurons that fire together, wire together"
-- **Strukturelle Plastizität**: Dynamische Kanten-Bildung/-Pruning
-- **Emergente Pfade**: Selbst-organisierende Informations-Routen
-
-### 2. 4D-Trichter
-
-Mathematisches Modell:
-
-```
-r(t,θ) = r₀ + f(t) · g(θ)
-ρ(r,θ,t) = ρ₀(r,θ) + Δρ(t)
-Ψ_total = ⊗ᵢ₌₁ᴺ Ψᵢ(t)
-```
-
-### 3. Metabolische Prozesse
-
-| Prozess | Beschreibung |
-|---------|-------------|
-| **Ingestion** | Aufnahme neuer Informations-Quanten |
-| **Digestion** | Transformation & Verbindungsbildung |
-| **Assimilation** | Integration in Langzeitstrukturen |
-| **Excretion** | Pruning schwacher Verbindungen |
-| **Synthesis** | Emergenz neuer Muster |
-
-### 4. Emergenz-Detektion
-
-Klassifiziert Muster als:
-- 🔄 **Periodic**: Wiederkehrende Strukturen
-- 🏛️ **Hierarchical**: Verschachtelte Ebenen
-- 🌀 **Chaotic**: Deterministisch aber sensitiv
-- 🌿 **Fractal**: Selbstähnlich
-- 🎵 **Harmonic**: Resonanz-basiert
-
----
-
-## 🔬 Domain-Agnostizität
-
-Das System ist **vollständig domain-agnostisch** durch:
-
-### Trait-basierte Abstraktion
-
-```rust
-pub trait InformationQuantum {
-    type Id: Clone + Debug + Hash + Eq;
-    
-    fn id(&self) -> Self::Id;
-    fn resonance(&self, other: &Self) -> f64;
-    fn energy(&self) -> f64;
-    fn fuse(&self, other: &Self, weight: f64) -> Self;
-}
-```
-
-### Universelle Anwendungen
-
-- 📝 **Text-Verarbeitung**: NLP, Semantische Analyse
-- 🔢 **Numerische Daten**: Zeitserien, Statistik
-- 🎨 **Multimedial**: Bilder, Audio (als Vektoren)
-- 🧬 **Genomik**: DNA-Sequenzen
-- 💹 **Finanzen**: Marktdaten, Transaktionen
-- 🔐 **Kryptographie**: Blockchain-Forensik
-- 🤖 **Maschinelles Lernen**: Feature-Extraktion
-
----
-
-## ⚙️ Konfiguration
-
-### OrganismConfig
-
-```rust
-OrganismConfig {
-    gabriel: GabrielConfig {
-        hebbian_rate: 0.1,
-        decay_rate: 0.01,
-        pruning_threshold: 0.001,
-        max_out_degree: 16,
-        activation_threshold: 0.5,
-        diffusion_rate: 0.8,
-    },
-    metabolic: MetabolicConfig {
-        ingestion_rate: 0.8,
-        digestion_efficiency: 0.7,
-        assimilation_threshold: 0.5,
-        excretion_rate: 0.1,
-        synthesis_rate: 0.2,
-        energy_decay: 0.05,
-        entropy_limit: 10.0,
-    },
-    emergence_threshold: 0.6,
-    health_decay: 0.01,
-    consciousness_threshold: 0.7,
-    survival_threshold: 0.1,
-}
-```
-
----
-
-## 🧪 Tests
+### Run tests
 
 ```bash
-# Unit Tests
-cargo test
-
-# Integration Tests
-cargo test --test integration
-
-# Benchmarks
-cargo bench
+cargo test            # run every crate's unit tests
+cargo test -p organism -- --ignored   # example for running ignored tests if added later
 ```
 
----
+Benchmark harnesses are provided via `criterion` in several crates; enable them with `cargo bench` once the nightly benchmarking toolchain is installed.
 
-## 📈 Performance
+## Architectural overview
 
-Optimiert für:
-- ✅ **Parallelität**: `rayon` für Multi-Threading
-- ✅ **Lock-freie Strukturen**: `parking_lot` für RwLock
-- ✅ **Effizientes Hashing**: `ahash` statt Standard-Hasher
-- ✅ **SIMD**: `nalgebra` mit SIMD-Support
-- ✅ **Zero-Copy**: Minimale Allokationen
+1. **Information ingestion** – Each quantum implements the `InformationQuantum` trait and is positioned inside the 4D funnel to determine neighbourhoods and potential resonance.【F:gabriel-core/src/lib.rs†L1-L55】【F:metabolics/src/lib.rs†L54-L116】
+2. **Neural dynamics** – Gabriel Cells link nearby quanta, propagate activations, and update weights with Hebbian learning and decay.【F:gabriel-core/src/graph.rs†L25-L147】【F:gabriel-core/src/graph.rs†L147-L215】
+3. **Metabolic regulation** – Energy, entropy, and growth metrics are updated every cycle while ingestion, digestion, assimilation, excretion, and synthesis steps manage network structure.【F:metabolics/src/lib.rs†L1-L198】【F:metabolics/src/lib.rs†L198-L360】
+4. **Emergent analysis** – Tensor samples from the funnel are evaluated for coherence and classified into qualitative pattern types; statistics accumulate over time.【F:emergence/src/lib.rs†L1-L182】
+5. **Organism state** – Health, consciousness, and survival thresholds are computed from metabolic stats and emergent complexity, with diagnostics emitted each lifecycle.【F:organism/src/lib.rs†L40-L190】
 
-Typische Performance:
-- **Ingestion**: ~1μs pro Quantum
-- **Metabolischer Zyklus**: ~100μs
-- **Emergenz-Detektion**: ~50μs pro Muster
+The modular design makes it straightforward to swap in domain-specific quanta, alternative geometric embeddings, or custom emergence detectors while reusing the metabolic backbone.
 
----
+## Mathematical cognition layer
 
-## 🔮 Zukunft & Erweiterungen
+The optional `mathematical-cognition` crate implements rich `InformationQuantum` types for integers, primes, functions, theorems, equations, and proof steps. It adds metadata such as mathematical complexity, similarity, and certainty to support emergent reasoning about mathematical structures.【F:mathematical-cognition/src/lib.rs†L1-L120】
 
-### Geplante Features
+Within the organism the `learning`, `memory`, and `reasoning` modules build on this layer to:
 
-- [ ] **Async Verarbeitung**: Tokio-basierte Parallelität
-- [ ] **Persistenz**: Serialisierung zu Disk
-- [ ] **Netzwerk**: Verteilte Organismen
-- [ ] **Visualisierung**: Real-time 4D-Trichter Rendering
-- [ ] **WASM**: Browser-Integration
-- [ ] **Python Bindings**: PyO3-basierte API
+- Reinforce proof paths using rewards and punishments (`learning.rs`).【F:organism/src/learning.rs†L1-L120】
+- Store and retrieve theorems with tag-based and resonance-based memory mechanisms (`memory.rs`).【F:organism/src/memory.rs†L1-L160】
+- Assemble reasoning chains and conjectures across different proof strategies (`reasoning.rs`).【F:organism/src/reasoning.rs†L1-L160】
 
-### Integration
+The `experiments/` directory contains prototype training scripts (e.g. progressive mathematical curricula and Riemann hypothesis exploration) that demonstrate how to drive the organism through increasingly complex domains.【F:experiments/README.md†L1-L120】【F:experiments/math_learning.rs†L1-L120】 These examples are not wired into Cargo binaries yet, but serve as blueprints for custom integration.
 
-- **PHOSPHOROS**: Blockchain-Forensik
-- **MEF-Core**: Vektor-Datenbank
-- **Infinity-Ledger**: Distributed Ledger
-- **Universal Resonance Engine**: Resonanz-Framework
+## Additional documentation
 
----
+- `BUILD.md` – detailed build, tooling, and troubleshooting guide
+- `EXAMPLES.md` – curated scenarios for integrating the organism into different domains
+- `TECHNICAL_SPEC.md` – mathematical derivations and performance characteristics
+- `DELIVERY_REPORT.md` – project status summary
 
-## 📚 Wissenschaftliche Grundlagen
+## License
 
-### Referenzen
-
-1. **Hebbian Learning**: Hebb, D. O. (1949). The Organization of Behavior.
-2. **Kybernetik**: Ashby, W. R. (1956). An Introduction to Cybernetics.
-3. **Selbst-Organisation**: Prigogine, I. (1977). Self-Organization in Non-Equilibrium Systems.
-4. **Informationsgeometrie**: Amari, S. (2016). Information Geometry and Its Applications.
-
-### Mathematisches Framework
-
-- **Tensorprodukte**: Multilineare Algebra
-- **Riemannsche Geometrie**: Metrische Tensoren
-- **Dynamische Systeme**: Lyapunov-Exponenten
-- **Informationstheorie**: Shannon-Entropie
-
----
-
-## 📄 Lizenz
-
-MIT OR Apache-2.0
-
----
-
-## 👤 Autor
-
-**Sebastian Klemm** (Augustus Clemens/"Sol invictus Sebastòs Mithras")
-
----
-
-## 🙏 Danksagungen
-
-Basierend auf der Gabriel Cell Architektur - ein kybernetisches Framework für emergente künstliche Intelligenz.
-
----
-
-**"Intelligence emerges not from complexity, but from structure, interaction, and feedback."**
+Dual-licensed under MIT or Apache-2.0, at your option.
