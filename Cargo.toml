@@ -4,7 +4,7 @@ members = [
     "trichter-geometry",
     "metabolics",
     "emergence",
-    "organism",
+    "organism", "mathematical-cognition",
 ]
 resolver = "2"
 

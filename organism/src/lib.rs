@@ -7,6 +7,11 @@ use std::sync::Arc;
 use parking_lot::RwLock;
 use tracing::{debug, info};
 
+// Mathematical intelligence modules
+pub mod learning;
+pub mod memory;
+pub mod reasoning;
+
 /// Haupt-Organismus: Kombiniert alle Komponenten zu einem lebenden System
 pub struct GabrielOrganism<Q: InformationQuantum> {
     /// Informations-Metabolismus
