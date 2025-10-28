@@ -1,0 +1,22 @@
+[package]
+name = "metabolics"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+gabriel-core = { path = "../gabriel-core" }
+trichter-geometry = { path = "../trichter-geometry" }
+nalgebra = { workspace = true }
+ndarray = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+parking_lot = { workspace = true }
+ahash = { workspace = true }
+
+[dev-dependencies]
+approx = { workspace = true }
