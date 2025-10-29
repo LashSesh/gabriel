@@ -9,6 +9,9 @@ use std::path::PathBuf;
 use thiserror::Error;
 use tracing::{debug, info};
 
+// Re-export CoherenceFeedback from metabolics to avoid duplication
+pub use metabolics::CoherenceFeedback;
+
 /// Errors that can occur in the fusion layer
 #[derive(Error, Debug)]
 pub enum FusionError {
@@ -83,32 +86,13 @@ impl FusionPacket {
     }
 }
 
-/// Feedback weights for Gabriel metabolic update
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CoherenceFeedback {
-    /// Hebbian learning modulation (0.0-1.0)
-    pub hebbian_modulation: f64,
-    
-    /// Energy boost factor (0.0-1.0)
-    pub energy_boost: f64,
-    
-    /// Entropy reduction factor (0.0-1.0)
-    pub entropy_reduction: f64,
-    
-    /// Pruning threshold (0.0-1.0)
-    pub pruning_threshold: f64,
-}
-
-impl CoherenceFeedback {
-    /// Creates feedback from a fusion packet
-    pub fn from_packet(packet: &FusionPacket) -> Self {
-        Self {
-            hebbian_modulation: packet.coherence_score,
-            energy_boost: packet.stability_index,
-            entropy_reduction: 1.0 - packet.entropy_score,
-            pruning_threshold: 1.0 - packet.coherence_score,
-        }
-    }
+/// Helper to convert fusion packet to coherence feedback
+pub fn fusion_packet_to_feedback(packet: &FusionPacket) -> CoherenceFeedback {
+    CoherenceFeedback::from_scores(
+        packet.coherence_score,
+        packet.entropy_score,
+        packet.stability_index,
+    )
 }
 
 /// Fusion layer configuration
@@ -149,7 +133,7 @@ impl Default for FusionConfig {
 /// Main fusion layer interface
 pub struct FusionLayer {
     config: FusionConfig,
-    cycle_count: usize,
+    pub cycle_count: usize,
     total_coherence: f64,
     total_stability: f64,
     history: Vec<FusionPacket>,
@@ -194,7 +178,7 @@ impl FusionLayer {
         self.cycle_count += 1;
         
         // Convert to feedback weights
-        let feedback = CoherenceFeedback::from_packet(&packet);
+        let feedback = fusion_packet_to_feedback(&packet);
         
         debug!(
             "Cycle {} complete: coherence={:.3}, stability={:.3}, entropy={:.3}",
@@ -393,12 +377,13 @@ mod tests {
     
     #[test]
     fn test_coherence_feedback_from_packet() {
+        use metabolics::CoherenceFeedback;
         let mut packet = FusionPacket::new(vec![1.0], 0, 0.0);
         packet.coherence_score = 0.8;
         packet.entropy_score = 0.2;
         packet.stability_index = 0.9;
         
-        let feedback = CoherenceFeedback::from_packet(&packet);
+        let feedback = fusion_packet_to_feedback(&packet);
         
         assert!((feedback.hebbian_modulation - 0.8).abs() < 1e-10);
         assert!((feedback.energy_boost - 0.9).abs() < 1e-10);

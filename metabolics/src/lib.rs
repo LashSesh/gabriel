@@ -7,6 +7,53 @@ use parking_lot::RwLock;
 use ahash::AHashMap;
 use tracing::{debug, trace};
 
+/// External coherence feedback from fusion layer
+/// 
+/// This structure provides feedback weights for metabolic adjustment
+/// based on Triton scoring of resonance patterns.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CoherenceFeedback {
+    /// Hebbian learning modulation (0.0-1.0)
+    pub hebbian_modulation: f64,
+    
+    /// Energy boost factor (0.0-1.0)
+    pub energy_boost: f64,
+    
+    /// Entropy reduction factor (0.0-1.0)
+    pub entropy_reduction: f64,
+    
+    /// Pruning threshold (0.0-1.0)
+    pub pruning_threshold: f64,
+}
+
+impl CoherenceFeedback {
+    /// Creates a new coherence feedback with default values
+    pub fn new() -> Self {
+        Self {
+            hebbian_modulation: 0.5,
+            energy_boost: 0.5,
+            entropy_reduction: 0.5,
+            pruning_threshold: 0.5,
+        }
+    }
+    
+    /// Creates feedback from coherence, entropy, and stability scores
+    pub fn from_scores(coherence: f64, entropy: f64, stability: f64) -> Self {
+        Self {
+            hebbian_modulation: coherence,
+            energy_boost: stability,
+            entropy_reduction: 1.0 - entropy,
+            pruning_threshold: 1.0 - coherence,
+        }
+    }
+}
+
+impl Default for CoherenceFeedback {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Metabolische Prozess-Typen
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MetabolicProcess {
@@ -342,6 +389,33 @@ impl<Q: InformationQuantum> InformationMetabolism<Q> {
         
         // Metabolischer Zyklus
         self.metabolic_cycle();
+    }
+    
+    /// Applies external coherence feedback from fusion layer
+    /// 
+    /// This integrates Triton scoring into the metabolic loop by:
+    /// - Modulating metabolic rates based on coherence
+    /// - Boosting energy based on stability
+    /// - Reducing entropy through ordering
+    /// - Adjusting pruning based on coherence
+    pub fn apply_coherence_feedback(&self, coherence_feedback: &CoherenceFeedback) {
+        let mut state = self.state.write();
+        
+        // Energy boost based on stability (up to 10% increase)
+        state.energy += coherence_feedback.energy_boost * 0.1;
+        state.energy = state.energy.min(2.0); // Cap at 2.0
+        
+        // Entropy reduction based on coherence (up to 5% reduction)
+        state.entropy *= 1.0 - (coherence_feedback.entropy_reduction * 0.05);
+        
+        // Modulate metabolic rate based on overall coherence
+        let coherence_factor = coherence_feedback.hebbian_modulation;
+        state.metabolic_rate = state.metabolic_rate * 0.9 + coherence_factor * 0.1;
+        
+        debug!(
+            "Applied coherence feedback: energy={:.3}, entropy={:.3}, metabolic_rate={:.3}",
+            state.energy, state.entropy, state.metabolic_rate
+        );
     }
     
     /// Zeichne Prozess auf
