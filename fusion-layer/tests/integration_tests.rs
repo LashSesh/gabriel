@@ -2,7 +2,7 @@
 //! 
 //! Tests the complete fusion cycle: Gabriel organism → Triton scoring → feedback
 
-use fusion_layer::{FusionLayer, FusionConfig, CoherenceFeedback};
+use fusion_layer::{FusionLayer, FusionConfig};
 use metabolics::{InformationMetabolism, MetabolicConfig};
 use gabriel_core::{GabrielConfig, InformationQuantum};
 use trichter_geometry::Trichter4D;
@@ -70,13 +70,13 @@ fn test_fusion_with_metabolics_integration() {
     let stats = metabolism.stats();
     let resonance_tensor = vec![
         stats.energy,
-        stats.information_mass / 10.0, // Normalize
-        1.0 - (stats.entropy / stats.entropy.max(1.0)),
+        stats.information_mass / 10.0, // Normalize to [0,1] range
+        1.0 - (stats.entropy.min(1.0)), // Clamp entropy to [0,1], invert for order
         stats.metabolic_rate,
         stats.growth_rate,
         stats.trichter_density,
-        (stats.neuron_count as f64) / 100.0, // Normalize
-        (stats.connection_count as f64) / 100.0, // Normalize
+        (stats.neuron_count as f64) / 100.0, // Normalize neuron count
+        (stats.connection_count as f64) / 100.0, // Normalize connection count
     ];
     
     // Execute fusion cycle
@@ -129,12 +129,14 @@ fn test_full_lifecycle_with_fusion() {
         
         // Get resonance tensor from metabolic state
         let stats = metabolism.stats();
+        // Entropy normalization factor - typical max entropy ~10.0 for Gabriel system
+        const ENTROPY_SCALE: f64 = 10.0;
         let resonance_tensor = vec![
             stats.energy,
             stats.metabolic_rate,
             stats.growth_rate,
             stats.trichter_density,
-            1.0 - (stats.entropy / 10.0).min(1.0),
+            1.0 - (stats.entropy / ENTROPY_SCALE).min(1.0), // Normalize and invert
         ];
         
         // Fusion cycle

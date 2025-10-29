@@ -377,7 +377,6 @@ mod tests {
     
     #[test]
     fn test_coherence_feedback_from_packet() {
-        use metabolics::CoherenceFeedback;
         let mut packet = FusionPacket::new(vec![1.0], 0, 0.0);
         packet.coherence_score = 0.8;
         packet.entropy_score = 0.2;

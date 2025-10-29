@@ -399,18 +399,26 @@ impl<Q: InformationQuantum> InformationMetabolism<Q> {
     /// - Reducing entropy through ordering
     /// - Adjusting pruning based on coherence
     pub fn apply_coherence_feedback(&self, coherence_feedback: &CoherenceFeedback) {
+        // Feedback scaling constants
+        const ENERGY_BOOST_SCALE: f64 = 0.1;      // Max 10% energy increase per feedback
+        const ENERGY_CAP: f64 = 2.0;               // Maximum energy level
+        const ENTROPY_REDUCTION_SCALE: f64 = 0.05; // Max 5% entropy reduction per feedback
+        const METABOLIC_SMOOTHING: f64 = 0.9;      // Smoothing factor for metabolic rate
+        const COHERENCE_WEIGHT: f64 = 0.1;         // Weight for coherence in metabolic rate
+        
         let mut state = self.state.write();
         
-        // Energy boost based on stability (up to 10% increase)
-        state.energy += coherence_feedback.energy_boost * 0.1;
-        state.energy = state.energy.min(2.0); // Cap at 2.0
+        // Energy boost based on stability
+        state.energy += coherence_feedback.energy_boost * ENERGY_BOOST_SCALE;
+        state.energy = state.energy.min(ENERGY_CAP);
         
-        // Entropy reduction based on coherence (up to 5% reduction)
-        state.entropy *= 1.0 - (coherence_feedback.entropy_reduction * 0.05);
+        // Entropy reduction based on coherence
+        state.entropy *= 1.0 - (coherence_feedback.entropy_reduction * ENTROPY_REDUCTION_SCALE);
         
-        // Modulate metabolic rate based on overall coherence
+        // Modulate metabolic rate based on overall coherence (exponential smoothing)
         let coherence_factor = coherence_feedback.hebbian_modulation;
-        state.metabolic_rate = state.metabolic_rate * 0.9 + coherence_factor * 0.1;
+        state.metabolic_rate = state.metabolic_rate * METABOLIC_SMOOTHING + 
+                               coherence_factor * COHERENCE_WEIGHT;
         
         debug!(
             "Applied coherence feedback: energy={:.3}, entropy={:.3}, metabolic_rate={:.3}",
