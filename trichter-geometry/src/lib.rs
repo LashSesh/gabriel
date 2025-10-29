@@ -234,11 +234,11 @@ impl Trichter4D {
     }
     
     /// Christoffel-Symbole für geodätische Bewegung
-    pub fn christoffel_symbols(&self, pos: Vector4<f64>) -> Vec<[[[f64; 4]; 4]; 4]> {
+    pub fn christoffel_symbols(&self, pos: Vector4<f64>) -> [[[f64; 4]; 4]; 4] {
         let r = pos[0];
         let theta = pos[1];
         
-        let mut gamma = vec![[[[0.0; 4]; 4]; 4]; 4];
+        let mut gamma = [[[0.0; 4]; 4]; 4];
         
         // Γʳ_θθ = -r
         gamma[0][1][1] = -r;

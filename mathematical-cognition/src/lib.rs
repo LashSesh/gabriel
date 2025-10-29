@@ -24,7 +24,7 @@ pub use complex::MathComplex;
 pub use function::MathFunction;
 pub use theorem::MathTheorem;
 pub use equation::MathEquation;
-pub use proof::ProofStep;
+pub use proof::{Proof, ProofStep};
 
 pub mod integer;
 pub mod prime;

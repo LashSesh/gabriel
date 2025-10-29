@@ -5,6 +5,7 @@ members = [
     "metabolics",
     "emergence",
     "organism", "mathematical-cognition",
+    "fusion-layer",
 ]
 resolver = "2"
 

@@ -3,12 +3,65 @@
 use crate::{MathId, MathQuantum, normalize_similarity};
 use gabriel_core::InformationQuantum;
 use num_complex::Complex64;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+// Custom serialization for Complex64
+fn serialize_complex<S>(c: &Complex64, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    use serde::ser::SerializeStruct;
+    let mut state = serializer.serialize_struct("Complex64", 2)?;
+    state.serialize_field("re", &c.re)?;
+    state.serialize_field("im", &c.im)?;
+    state.end()
+}
+
+fn deserialize_complex<'de, D>(deserializer: D) -> Result<Complex64, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    use serde::de::{self, MapAccess, Visitor};
+    use std::fmt;
+    
+    struct Complex64Visitor;
+    
+    impl<'de> Visitor<'de> for Complex64Visitor {
+        type Value = Complex64;
+        
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("struct Complex64")
+        }
+        
+        fn visit_map<V>(self, mut map: V) -> Result<Complex64, V::Error>
+        where
+            V: MapAccess<'de>,
+        {
+            let mut re = None;
+            let mut im = None;
+            while let Some(key) = map.next_key::<String>()? {
+                match key.as_str() {
+                    "re" => re = Some(map.next_value()?),
+                    "im" => im = Some(map.next_value()?),
+                    _ => {
+                        let _: serde::de::IgnoredAny = map.next_value()?;
+                    }
+                }
+            }
+            let re = re.ok_or_else(|| de::Error::missing_field("re"))?;
+            let im = im.ok_or_else(|| de::Error::missing_field("im"))?;
+            Ok(Complex64::new(re, im))
+        }
+    }
+    
+    deserializer.deserialize_struct("Complex64", &["re", "im"], Complex64Visitor)
+}
 
 /// Complex number with analytical properties
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MathComplex {
     pub id: MathId,
+    #[serde(serialize_with = "serialize_complex", deserialize_with = "deserialize_complex")]
     pub value: Complex64,
     /// On unit circle?
     pub on_unit_circle: bool,

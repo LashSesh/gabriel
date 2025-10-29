@@ -23,6 +23,7 @@ ahash = { workspace = true }
 parking_lot = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
+rand = { workspace = true }
 
 [dev-dependencies]
 approx = { workspace = true }
