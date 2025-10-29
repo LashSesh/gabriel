@@ -2,7 +2,7 @@ use ndarray::{Array1, Array2, ArrayView1};
 use num_complex::Complex64;
 use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
-use statrs::statistics::{Data, OrderStatistics, Statistics};
+use statrs::statistics::{Data, OrderStatistics, Statistics, Distribution};
 
 /// Emergenz-Detektor für Tensorprodukt-Muster
 #[derive(Debug)]
@@ -43,7 +43,7 @@ pub struct EmergentPattern {
 }
 
 /// Muster-Typen
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PatternType {
     /// Periodisch (wiederkehrend)
     Periodic,

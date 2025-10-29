@@ -1,0 +1,16 @@
+{
+  "fusion_version": "1.0.0",
+  "total_evaluations": 10,
+  "coherence_window": 8,
+  "seed": 42,
+  "final_metrics": {
+    "coherence": 0.0,
+    "stability": 0.0,
+    "entropy": 0.39985454321831326
+  },
+  "history_summary": {
+    "total_cycles": 10,
+    "average_coherence": 0.23982852380706507,
+    "average_stability": 0.058555300264043694
+  }
+}

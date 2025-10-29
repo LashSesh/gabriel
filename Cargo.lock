@@ -383,6 +383,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
+name = "fusion-layer"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "emergence",
+ "gabriel-core",
+ "metabolics",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "gabriel-core"
 version = "0.1.0"
 dependencies = [
@@ -566,6 +581,7 @@ dependencies = [
  "num-traits",
  "parking_lot",
  "proptest",
+ "rand 0.8.5",
  "serde",
  "serde_json",
  "statrs",
