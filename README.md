@@ -1,111 +1,432 @@
-# Gabriel Organism
+# Gabriel Organismus
 
-Gabriel Organism is a Rust workspace that explores a biologically inspired "metabolic" approach to information processing. It models an adaptive organism that ingests domain-agnostic information quanta, organizes them in a self-rewiring neural graph, embeds them in a 4D funnel geometry, and detects emergent structure over time. The workspace is organised as modular crates so the metabolic core, geometry, emergence analysis, and higher-level reasoning layers can be reused independently.
+Ein domänenagnostisches, biologisch inspiriertes kognitives System zur emergenten Informationsverarbeitung.
 
-## Highlights
+## Überblick
 
-- **Metabolic information flow** – ingestion, digestion, assimilation, excretion, and synthesis loops regulate how quanta move through the system and how synaptic weights evolve over time.
-- **Self-organising neural substrate** – Gabriel Cells manage a dynamic directed graph with Hebbian reinforcement, structural pruning, and diffusion-based activation propagation.
-- **4D funnel geometry** – each quantum is placed in a temporal-spatial manifold that drives neighbourhood formation and tensor-based pattern sampling.
-- **Emergent pattern analysis** – tensor signatures are inspected for coherence, complexity, stability, and qualitative classes (periodic, harmonic, fractal, chaotic, hierarchical).
-- **Organism orchestration** – the `organism` crate wires metabolism, emergence, and diagnostics together, exposes a CLI, and tracks health, consciousness, and lifecycle progression.
-- **Mathematical cognition layer** – optional abstractions describe mathematical objects, proofs, and curricula so higher-level reasoning can emerge from the same substrate.
+Gabriel ist ein sophistiziertes Informationsverarbeitungssystem, das biologische Prinzipien auf die Wissensverarbeitung überträgt. Das System behandelt **beliebige Informationstypen** einheitlich durch eine universelle Abstraktion (`InformationQuantum`) und ermöglicht emergentes Lernen ohne explizite Programmierung von Logik oder Strukturen.
 
-## Workspace layout
+### Kernprinzipien
+
+- **Domänenagnostik**: Ein einziges Trait (`InformationQuantum`) ermöglicht die Verarbeitung beliebiger Informationstypen – von mathematischen Objekten über Text bis hin zu Vektoren
+- **Emergentes Lernen**: Strukturen und Muster entstehen durch Hebbsches Lernen und Selbstorganisation, nicht durch explizite Programmierung
+- **Biologischer Realismus**: Metabolische Zyklen, Energieerhaltung und neuronale Dynamik nach biologischem Vorbild
+- **Mathematische Fundierung**: 4D-Trichtergeometrie, Fourier-Analyse, Geodäten und Tensorprodukte
+
+---
+
+## Architektur
+
+Das System ist als Rust-Workspace mit sieben spezialisierten Crates organisiert, ergänzt durch eine Python-Schicht für analytisches Scoring.
 
 ```
 gabriel/
-├── Cargo.toml                  # Workspace members & shared dependencies
-├── BUILD.md, TECHNICAL_SPEC.md # Additional architecture & build notes
-├── gabriel-core/               # Dynamic neuron graph & InformationQuantum trait
-├── trichter-geometry/          # 4D funnel growth, density & tensor sampling
-├── metabolics/                 # Metabolic engine connecting cells & geometry
-├── emergence/                  # Pattern detection & statistics
-├── organism/                   # Library + CLI binary (`gabriel-organism`)
-├── mathematical-cognition/     # Math-specific quantum types and tooling
-└── experiments/                # Exploratory training scenarios & prototypes
+├── gabriel-core/           # Neuronales Substrat & InformationQuantum-Trait
+├── trichter-geometry/      # 4D-Trichtergeometrie für Informationsakkumulation
+├── metabolics/             # Metabolischer Zyklus der Informationsverarbeitung
+├── emergence/              # Mustererkennung und Klassifikation
+├── organism/               # Zentraler Orchestrator mit Lernen, Gedächtnis, Reasoning
+├── mathematical-cognition/ # Mathematische Domäneninstanziierung
+├── fusion-layer/           # Python-Rust-Brücke für Triton-Scoring
+└── python/                 # Triton-Alchemie-Engine (Analytisches Framework)
 ```
 
-Each crate can be built and tested on its own, while the `organism` crate provides an executable demo of the whole organism.
+---
 
-## Getting started
+## Kernmodule
 
-### Prerequisites
+### Gabriel-Core
 
-- Rust 1.75+ with `cargo` and `rustup`
-- (Optional) `llvm-tools-preview` for benchmarking via `criterion`
+Das Fundament des gesamten Systems. Definiert die universelle Informationsabstraktion und das selbstorganisierende neuronale Netzwerk.
 
-### Build the workspace
+**InformationQuantum-Trait** – Die zentrale Abstraktion:
+
+```rust
+pub trait InformationQuantum: Clone + Debug + Send + Sync {
+    type Id: Clone + Debug + Hash + Eq + Send + Sync;
+
+    fn id(&self) -> Self::Id;                    // Eindeutiger Bezeichner
+    fn resonance(&self, other: &Self) -> f64;    // Ähnlichkeit [0, 1]
+    fn energy(&self) -> f64;                     // Aktivierungspotential
+    fn fuse(&self, other: &Self, weight: f64) -> Self;  // Kombination
+}
+```
+
+**GabrielCell** – Selbstorganisierendes neuronales Netzwerk:
+- `GabrielNeuron`: Speichert Informationsquantum + Aktivierungszustand + Energie + Position im 4D-Raum
+- `GabrielEdge`: Synaptische Verbindungen mit Hebbscher Plastizität
+- `SynapticWeight`: Modelliert Lernen mit Verstärkung, Zerfall und Pruning-Schwellwerten
+- **Hebbsches Lernen**: "Neuronen, die gemeinsam feuern, verdrahten sich"
+- **Strukturelles Pruning**: Entfernt schwache Verbindungen über Zeit
+
+### Trichter-Geometrie
+
+Mathematischer Raum für Informationsakkumulation in 4D.
+
+**Geometrische Grundlage**:
+```
+r(t,θ) = r₀ + f(t)·g(θ)
+```
+
+- **Zeitabhängiges Wachstum**: Logarithmische + lineare + spiralförmige Komponenten
+- **Winkelmodulation**: Sektorgewichtete Verteilung
+- **Dichtefelder**: Informationsdichte ρ(r,θ,t)
+- **Metriktensor**: Geodätische Pfadberechnung für optimale Routen durch den Informationsraum
+
+### Metabolics
+
+Biologisch inspirierter Stoffwechsel für Informationsverarbeitung.
+
+**Fünf metabolische Phasen**:
+
+1. **Ingestion** – Aufnahme neuer Informationsquanten
+2. **Digestion** – Erzeugung neuronaler Verbindungen basierend auf räumlicher Nähe
+3. **Assimilation** – Integration stabiler Strukturen in Langzeitwissen
+4. **Excretion** – Pruning schwacher/redundanter Informationen
+5. **Synthese** – Entdeckung emergenter Strukturen
+
+**CoherenceFeedback**: Externe Abstimmung aus dem Triton-Scoring-Framework zur dynamischen Anpassung metabolischer Raten.
+
+### Emergence
+
+Mustererkennung und -klassifikation durch Tensoranalyse.
+
+**Erkannte Mustertypen**:
+- **Periodisch**: Wiederkehrende Muster
+- **Harmonisch**: Resonanzbasierte Beziehungen
+- **Fraktal**: Selbstähnliche Strukturen
+- **Chaotisch**: Sensitive Abhängigkeit (Ljapunow-Exponent)
+- **Hierarchisch**: Mehrstufige Organisation
+
+**Methoden**: Fourier-Analyse, Autokorrelation, Shannon-Entropie
+
+### Organism
+
+Zentraler Koordinator, der alle Komponenten integriert.
+
+**Drei kognitive Subsysteme**:
+
+1. **Lernen** (`learning.rs`): Verstärkungslernen für Beweis-Erfolg
+2. **Gedächtnis** (`memory.rs`): Langzeitspeicher mit Zerfall und Konsolidierung
+3. **Reasoning** (`reasoning.rs`): Musterbasierte Konjekturgenerierung
+
+**Lebenszyklus-Mechanik**:
+- Gesundheit, Bewusstsein, Altersfortschritt
+- Überlebensschwellwert
+- Awareness emergenter Muster
+
+### Mathematical-Cognition
+
+Instanziierung des domänenagnostischen Systems für mathematische Objekte.
+
+**Mathematische Typen**:
+
+| Typ | Beschreibung |
+|-----|--------------|
+| `MathInteger` | Zahlen mit Eigenschaften (gerade, ungerade, prim, zusammengesetzt) |
+| `MathPrime` | Spezielle Primeigenschaften (Zwilling, Sophie Germain, Mersenne) |
+| `MathComplex` | Komplexe Zahlen |
+| `MathFunction` | Funktionsobjekte mit Definitions-/Wertebereichen |
+| `MathTheorem` | Theoremrepräsentation |
+| `MathEquation` | Gleichungen als Quanten |
+| `Proof` | Beweisobjekte mit Beweisschritten |
+
+**Resonanzberechnung für MathInteger**:
+- 50% geteilte Eigenschaften (beide prim, beide gerade, etc.)
+- 30% numerische Nähe
+- 20% Teilbarkeitsbeziehungen
+
+### Fusion-Layer
+
+Brücke zwischen Rust und Python für analytisches Scoring.
+
+**Komponenten**:
+- `FusionLayer`: Integration von Triton-Scoring mit metabolischem Feedback
+- `FusionPacket`: Einheitliches Datenmodell für Tensor → Scores
+
+**Berechnete Metriken**:
+- **Kohärenz**: Signalstabilität (Autokorrelation)
+- **Entropie**: Shannon-Entropie der Verteilungen
+- **Stabilität**: Komposit-Metrik (Kohärenz × (1 - Entropie))
+
+### Python-Schicht (Triton-Alchemie)
+
+Fortgeschrittenes analytisches Framework.
+
+**Kernkonzepte**:
+- **TRITON-Alchemie-Engine**: 5D-Spiralexploration mit Spektralfeldmessung
+- **SpectralSignature**: σ = (ψ, ρ, ω) für Kohärenz, Dichte, Frequenz
+- **Ouroboros-Feedback**: Selbstreferentielles Momentum für Spiralnavigation
+- **Solve et Coagula**: Phasenübergänge und Merkaba-Gate-Evaluation
+
+---
+
+## Datenfluss
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FEEDING-PHASE                                │
+├─────────────────────────────────────────────────────────────────┤
+│  Quantum → InformationMetabolism.ingest()                       │
+│         → GabrielCell.add_neuron() + Trichter4D-Position        │
+│         → Energie + Position gespeichert                        │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                   LIFECYCLE-PHASE                               │
+├─────────────────────────────────────────────────────────────────┤
+│  Metabolism.step() →                                            │
+│    digest()      [Proximity-basierte Verbindungen]              │
+│    assimilate()  [Stabile Strukturintegration]                  │
+│    excrete()     [Pruning]                                      │
+│    synthesize()  [Emergente Strukturentdeckung]                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                   REASONING-PHASE                               │
+├─────────────────────────────────────────────────────────────────┤
+│  GabrielOrganism.lifecycle() →                                  │
+│    EmergenceDetector.analyze_tensor()                           │
+│    MathematicalReasoning.detect_pattern()                       │
+│    LearningSignal [Reward/Punishment]                           │
+│    MathematicalLearning.apply_signal()                          │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                   FEEDBACK-PHASE                                │
+├─────────────────────────────────────────────────────────────────┤
+│  FusionLayer.fusion_cycle() →                                   │
+│    Triton-Evaluation (Python)                                   │
+│    FusionPacket-Erstellung                                      │
+│    CoherenceFeedback → InformationMetabolism                    │
+│    Metabolische Raten angepasst                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Verwendung
+
+### Voraussetzungen
+
+- Rust 1.75+ mit `cargo`
+- Python 3.9+ (für Triton-Komponenten)
+- Optional: `llvm-tools-preview` für Benchmarking
+
+### Bauen
 
 ```bash
-cd gabriel
-cargo build
+cargo build --release
 ```
 
-### Run the organism
-
-The main binary lives in `organism/src/main.rs` and is exposed as `gabriel-organism`. It feeds synthetic quanta, steps through lifecycle iterations, and prints a diagnostic report.
+### Organismus ausführen
 
 ```bash
-cargo run -p organism --bin gabriel-organism -- --cycles 120 --feed-count 80 --radius 1.5 --verbose
+cargo run -p organism --bin gabriel-organism -- \
+    --cycles 120 \
+    --feed-count 80 \
+    --radius 1.5 \
+    --verbose
 ```
 
-CLI flags:
+**CLI-Optionen**:
 
-- `--cycles <u64>` – number of lifecycle iterations to execute (default: 100)
-- `--feed-count <u64>` – how many quanta to ingest before running cycles (default: 50)
-- `--radius <f64>` – initial funnel radius for the geometry model (default: 1.0)
-- `--output <path>` – export final organism state and diagnostics to JSON
-- `--verbose` – enable debug-level tracing via `tracing_subscriber`
+| Flag | Beschreibung | Standard |
+|------|--------------|----------|
+| `--cycles <u64>` | Anzahl der Lebenszyklusiterationen | 100 |
+| `--feed-count <u64>` | Anzahl der zu ingestierenden Quanten | 50 |
+| `--radius <f64>` | Initialer Trichterradius | 1.0 |
+| `--output <path>` | Export des Endzustands als JSON | - |
+| `--verbose` | Debug-Level Tracing aktivieren | false |
 
-At the end of a run the organism prints a multi-section diagnostics report that summarises vitals, metabolism, emergent patterns, and geometry state.
+### Programmatische Integration
 
-### Inspecting state programmatically
+```rust
+use organism::GabrielOrganism;
+use gabriel_core::InformationQuantum;
 
-The library API offers helpers for embedding in other applications:
+// Organismus erstellen
+let mut organism = GabrielOrganism::new(config);
 
-- `GabrielOrganism::feed` to ingest arbitrary `InformationQuantum` implementations.
-- `GabrielOrganism::lifecycle` to advance the metabolism/emergence loop and update organism state.
-- `GabrielOrganism::diagnostics` and `GabrielOrganism::export_state` to retrieve structured telemetry.
+// Informationen füttern
+organism.feed(quantum);
 
-### Run tests
+// Lebenszyklus ausführen
+organism.lifecycle();
+
+// Diagnostik abrufen
+let diagnostics = organism.diagnostics();
+```
+
+### Tests ausführen
 
 ```bash
-cargo test            # run every crate's unit tests
-cargo test -p organism -- --ignored   # example for running ignored tests if added later
+cargo test                           # Alle Tests
+cargo test -p mathematical-cognition # Nur mathematische Kognition
+cargo bench                          # Benchmarks (mit Criterion)
 ```
 
-Benchmark harnesses are provided via `criterion` in several crates; enable them with `cargo bench` once the nightly benchmarking toolchain is installed.
+---
 
-## Architectural overview
+## Domänenagnostisches Design
 
-1. **Information ingestion** – Each quantum implements the `InformationQuantum` trait and is positioned inside the 4D funnel to determine neighbourhoods and potential resonance.
-2. **Neural dynamics** – Gabriel Cells link nearby quanta, propagate activations, and update weights with Hebbian learning and decay.
-3. **Metabolic regulation** – Energy, entropy, and growth metrics are updated every cycle while ingestion, digestion, assimilation, excretion, and synthesis steps manage network structure.
-4. **Emergent analysis** – Tensor samples from the funnel are evaluated for coherence and classified into qualitative pattern types; statistics accumulate over time.
-5. **Organism state** – Health, consciousness, and survival thresholds are computed from metabolic stats and emergent complexity, with diagnostics emitted each lifecycle.
+Das System ist **bewusst domänenneutral** konzipiert:
 
-The modular design makes it straightforward to swap in domain-specific quanta, alternative geometric embeddings, or custom emergence detectors while reusing the metabolic backbone.
+### 1. Generisches Quantum-Interface
 
-## Mathematical cognition layer
+Funktioniert mit beliebigen Typen, die `InformationQuantum` implementieren:
+- `MathInteger`, `MathPrime`, `MathTheorem`
+- `UniversalQuantum` (Bytes-basiert, für beliebige Daten)
+- Eigene Typen durch einfache Trait-Implementierung
 
-The optional `mathematical-cognition` crate implements rich `InformationQuantum` types for integers, primes, functions, theorems, equations, and proof steps. It adds metadata such as mathematical complexity, similarity, and certainty to support emergent reasoning about mathematical structures.
+### 2. Pluggable Evaluatoren
 
-Within the organism the `learning`, `memory`, and `reasoning` modules build on this layer to:
+```python
+class SpectralEvaluator(ABC):
+    @abstractmethod
+    def evaluate(self, tensor: np.ndarray) -> SpectralSignature:
+        pass
+```
 
-- Reinforce proof paths using rewards and punishments (`learning.rs`).
-- Store and retrieve theorems with tag-based and resonance-based memory mechanisms (`memory.rs`).
-- Assemble reasoning chains and conjectures across different proof strategies (`reasoning.rs`).
+Neue Evaluatoren können ohne Änderung des Kerns hinzugefügt werden.
 
-The `experiments/` directory contains prototype training scripts (e.g. progressive mathematical curricula and Riemann hypothesis exploration) that demonstrate how to drive the organism through increasingly complex domains. These examples are not wired into Cargo binaries yet, but serve as blueprints for custom integration.
+### 3. Generischer Metabolischer Zyklus
 
-## Additional documentation
+- Arbeitet auf beliebigen Quantum-Typen
+- Digestion nutzt räumliche Nähe (Trichter-4D-Koordinaten)
+- Keine Annahmen über die Art der Information
 
-- `BUILD.md` – detailed build, tooling, and troubleshooting guide
-- `EXAMPLES.md` – curated scenarios for integrating the organism into different domains
-- `TECHNICAL_SPEC.md` – mathematical derivations and performance characteristics
-- `DELIVERY_REPORT.md` – project status summary
+### 4. Mathematik als Spezialfall
 
-## License
+Die mathematische Kognition ist **nicht** in den Kern eingebaut:
+- Eigenständiges Domänenmodul
+- Instanziiert `InformationQuantum` für mathematische Objekte
+- Dieselben Mechanismen funktionieren für andere Domänen
 
-Apache-2.0
+---
+
+## Neue Domäne hinzufügen
+
+Um eine neue Domäne zu unterstützen, implementieren Sie lediglich `InformationQuantum`:
+
+```rust
+#[derive(Clone, Debug)]
+pub struct MeineDomäne {
+    id: String,
+    daten: Vec<f64>,
+}
+
+impl InformationQuantum for MeineDomäne {
+    type Id = String;
+
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+
+    fn resonance(&self, other: &Self) -> f64 {
+        // Domänenspezifische Ähnlichkeitsberechnung
+        kosinusähnlichkeit(&self.daten, &other.daten)
+    }
+
+    fn energy(&self) -> f64 {
+        // Domänenspezifisches Aktivierungspotential
+        self.daten.iter().map(|x| x.abs()).sum::<f64>()
+    }
+
+    fn fuse(&self, other: &Self, weight: f64) -> Self {
+        // Domänenspezifische Kombination
+        MeineDomäne {
+            id: format!("{}+{}", self.id, other.id),
+            daten: self.daten.iter()
+                .zip(&other.daten)
+                .map(|(a, b)| a * (1.0 - weight) + b * weight)
+                .collect(),
+        }
+    }
+}
+```
+
+Die gesamte kognitive Maschinerie – neuronale Dynamik, metabolische Zyklen, Mustererkennung – funktioniert dann automatisch mit der neuen Domäne.
+
+---
+
+## Laufzeitverhalten
+
+### Organismus-Lebenszyklus
+
+1. **Erstellung**: Initialisierung mit zufälligen Neuronen und Trichtergeometrie
+2. **Fütterung**: Aufnahme von Informationsquanten → Speicherung als Neuronen
+3. **Verarbeitung**: Metabolischer Zyklus verarbeitet und verfeinert Information
+4. **Mustererkennung**: Emergence-Detektor identifiziert kohärente Muster
+5. **Lernen**: Erfolgreiche Muster verstärken neuronale Gewichte
+6. **Alterung**: Gesundheit zerfällt, Gedächtnis konsolidiert, Neuronen refaktorieren
+7. **Tod**: Organismus stirbt bei Gesundheit < Überlebensschwellwert
+
+### Mathematisches Lernbeispiel
+
+```
+Eingabe: Integer 12
+  ↓
+Erkannte Eigenschaften: gerade, zusammengesetzt, positiv
+  ↓
+Resonanz mit: 6 (Teiler), 24 (Vielfaches), 13 (Nachbar)
+  ↓
+Bei erfolgreichem Beweis: Gewicht(12→nächster_Knoten) steigt
+  ↓
+Über Zeit: Organismus lernt "gerade zusammengesetzte Zahlen
+           erscheinen oft in bestimmten Beweismustern"
+```
+
+---
+
+## Design-Entscheidungen
+
+### Rust für den Kern
+
+- **Performance**: Kompilierzeit-Polymorphismus ohne vtables
+- **Typsicherheit**: Generische Parameter `<Q: InformationQuantum>` durchgehend
+- **Nebenläufigkeit**: `Arc<RwLock<>>` für Interior Mutability
+
+### Python für Analytik
+
+- Komplexe analytische Algorithmen (FFT, Statistik)
+- Schnelle Iteration bei experimentellen Evaluatoren
+- NumPy/SciPy-Ökosystem
+
+### Modularer Workspace
+
+- Klare Modulgrenzen
+- Unabhängig wiederverwendbare Komponenten
+- Einzelne Crates können separat gebaut und getestet werden
+
+---
+
+## Systemcharakteristika
+
+### Stärken
+
+- **Echte Domänenagnostik**: Eine Codebasis für beliebige Informationstypen
+- **Emergentes Lernen**: Keine explizite Logikprogrammierung, Strukturen emergieren
+- **Biologischer Realismus**: Hebbsche Regeln, metabolische Zyklen, Energieerhaltung
+- **Mathematische Sophistikation**: Fourier-Analyse, Geodäten, Tensorprodukte
+- **Produktionsreif**: Umfassende Fehlerbehandlung, Logging, Testing
+
+### Neuartige Konzepte
+
+- **4D-Trichtergeometrie**: Informationsakkumulation mit Winkelsektoren
+- **Ouroboros-Feedback-Schleife**: Selbstreferentielle Navigation im Spiralraum
+- **Solve et Coagula**: Alchemistische Phasenübergänge (flüssig ↔ fest)
+- **Merkaba-Gate**: Multi-Konditions-Emergenz-Gating
+- **Einheitliche Spektralsignatur**: σ = (ψ, ρ, ω) für universelle Evaluation
+
+---
+
+## Lizenz
+
+Apache-2.0 / MIT (Dual-Lizenz)
+
+---
+
+## Autor
+
+Sebastian Klemm
